@@ -42,10 +42,21 @@ public class StudentController {
     }
     @DeleteMapping("/students/{studentId}")
     public String delete(@PathVariable Integer studentId){
-        String sql = "DELETE FROM  student WHERE id=:studentId";
+        String sql = "DELETE FROM student WHERE id=:studentId";
         Map<String,Object> map = new HashMap<>();
         map.put("studentId",studentId);
         namedParameterJdbcTemplate.update(sql,map);
         return "執行delete sql";
+    }
+    @GetMapping("students")
+    public List<Student> select(){
+        /*
+            在寫select sql時 不要使用*號
+            使用*號的缺點有 1. 花費額外的網路流量 2. 無法提升資料庫查詢速度
+        */
+        String sql = "SELECT id,name FROM student";
+        Map<String,Object> map = new HashMap<>();
+        List<Student> studentList= namedParameterJdbcTemplate.query(sql,map,new StudentRowMapper());
+        return studentList;
     }
 }
