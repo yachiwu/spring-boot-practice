@@ -1,23 +1,24 @@
-package com.example.demo;
+package com.example.demo.dao;
 
+import com.example.demo.model.Student;
+import com.example.demo.mapper.StudentRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Component;
 
-import javax.swing.plaf.PanelUI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
-public class StudentController {
+@Component
+public class StudentDaoImpl implements StudentDao{
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    @PostMapping("/students")
-    public String insert(@RequestBody Student student){
+    @Override
+    public void insertStudent(Student student) {
         String sql = "INSERT INTO student(name) VALUES (:studentName)";
         Map<String,Object> map = new HashMap<>();
         map.put("studentName",student.getName());
@@ -26,10 +27,10 @@ public class StudentController {
         namedParameterJdbcTemplate.update(sql,new MapSqlParameterSource(map),keyHolder);
         int id = keyHolder.getKey().intValue();
         System.out.println("mysql 自動生成的id為 "+ id);
-        return "執行insert sql";
     }
-    @PostMapping("/students/batch")
-    public String insertList(@RequestBody List<Student> studentList){
+
+    @Override
+    public void batchInsertStudent(List<Student> studentList) {
         String sql = "INSERT INTO student(name) VALUES (:studentName)";
         MapSqlParameterSource[] parameterSources = new MapSqlParameterSource[studentList.size()];
         for (int i=0;i<studentList.size();i++){
@@ -38,29 +39,26 @@ public class StudentController {
             parameterSources[i].addValue("studentName",student.getName());
         }
         namedParameterJdbcTemplate.batchUpdate(sql,parameterSources);
-        return "執行一批insert sql";
     }
-    @DeleteMapping("/students/{studentId}")
-    public String delete(@PathVariable Integer studentId){
+
+    @Override
+    public void deleteByStudentId(Integer studentId) {
         String sql = "DELETE FROM student WHERE id=:studentId";
         Map<String,Object> map = new HashMap<>();
         map.put("studentId",studentId);
         namedParameterJdbcTemplate.update(sql,map);
-        return "執行delete sql";
     }
-    @GetMapping("students")
-    public List<Student> select(){
-        /*
-            在寫select sql時 不要使用*號
-            使用*號的缺點有 1. 花費額外的網路流量 2. 無法提升資料庫查詢速度
-        */
+
+    @Override
+    public List<Student> getAllStudents() {
         String sql = "SELECT id,name FROM student";
         Map<String,Object> map = new HashMap<>();
         List<Student> studentList= namedParameterJdbcTemplate.query(sql,map,new StudentRowMapper());
         return studentList;
     }
-    @GetMapping("student/{studentId}")
-    public Student selectStudent(@PathVariable Integer studentId){
+
+    @Override
+    public Student getByStudentId(Integer studentId) {
         String countSql = "SELECT count(*) FROM student";
         Map<String,Object> countMap = new HashMap<>();
         Integer count = namedParameterJdbcTemplate.queryForObject(countSql,countMap,Integer.class);
@@ -75,4 +73,6 @@ public class StudentController {
             return null;
         }
     }
+
+
 }
