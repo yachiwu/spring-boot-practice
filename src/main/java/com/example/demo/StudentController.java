@@ -3,6 +3,10 @@ package com.example.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 public class StudentController {
     @Autowired
@@ -37,4 +41,36 @@ public class StudentController {
         Student student = studentRepository.findById(studentId).orElse(null);
         return student;
     }
+    @GetMapping("/students")
+    public Student getStudent(
+            @RequestParam(name = "id", required = false) Integer studentId,
+            @RequestParam(name="name") String studentName){
+        if (studentId != null) {
+            Optional<Student> student = studentRepository.findByIdAndName(studentId, studentName);
+            if (student.isPresent()) {
+                System.out.println("找到");
+                return student.get();
+            } else {
+                System.out.println("根據ID和名字未找到");
+                return null;
+            }
+        } else {
+            // Handle the case where 'id' parameter is not provided
+            // Query by 'name' only
+            Optional<Student> student= studentRepository.findByName(studentName);
+            if (student.isPresent()) {
+                System.out.println("找到");
+                return student.get();
+            } else {
+                System.out.println("根據ID和名字未找到");
+                return null;
+            }
+        }
+    }
+
+
+
+
+
+
 }
