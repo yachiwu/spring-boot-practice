@@ -5,7 +5,7 @@ import com.example.demo.model.Student;
 import java.util.List;
 
 public interface StudentService {
-    void insertStudent(Student student);
+    Integer insertStudent(Student student);
     void batchInsertStudent(List<Student> studentList);
     void updateStudent(Student student);
 

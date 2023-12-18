@@ -18,9 +18,10 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
     @PostMapping("/students")
-    public String insert(@RequestBody Student student){
-            studentService.insertStudent(student);
-            return "執行insert sql";
+    public ResponseEntity<Student>  insert(@RequestBody Student student){
+            Integer studentId = studentService.insertStudent(student);
+            Student newStudent = studentService.getByStudentId(studentId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newStudent);
     }
     @PutMapping("/students/{studentId}")
     public ResponseEntity<?> update(@PathVariable Integer studentId,
@@ -48,7 +49,8 @@ public class StudentController {
         return studentList;
     }
     @GetMapping("students/{studentId}")
-    public Student selectStudent(@PathVariable Integer studentId){
-        return studentService.getByStudentId(studentId);
+    public ResponseEntity<Student> selectStudent(@PathVariable Integer studentId){
+        Student student = studentService.getByStudentId(studentId);
+        return ResponseEntity.status(HttpStatus.OK).body(student);
     }
 }
