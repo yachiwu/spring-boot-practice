@@ -18,7 +18,7 @@ public class StudentDaoImpl implements StudentDao{
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     @Override
-    public void insertStudent(Student student) {
+    public Integer insertStudent(Student student) {
         String sql = "INSERT INTO student(name) VALUES (:studentName)";
         Map<String,Object> map = new HashMap<>();
         map.put("studentName",student.getName());
@@ -27,6 +27,15 @@ public class StudentDaoImpl implements StudentDao{
         namedParameterJdbcTemplate.update(sql,new MapSqlParameterSource(map),keyHolder);
         int id = keyHolder.getKey().intValue();
         System.out.println("mysql 自動生成的id為 "+ id);
+        return id;
+    }
+    @Override
+    public void updateStudent(Student student) {
+        String sql = "UPDATE student SET name = :name WHERE id = :id";
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", student.getId());
+        map.put("name", student.getName());
+        namedParameterJdbcTemplate.update(sql, map);
     }
 
     @Override

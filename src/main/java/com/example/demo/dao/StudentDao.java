@@ -5,8 +5,9 @@ import com.example.demo.model.Student;
 import java.util.List;
 
 public interface StudentDao {
-    void insertStudent(Student student);
+    Integer insertStudent(Student student);
     void batchInsertStudent(List<Student> studentList);
+    void updateStudent(Student student);
 
     void deleteByStudentId(Integer studentId);
     List<Student> getAllStudents();
