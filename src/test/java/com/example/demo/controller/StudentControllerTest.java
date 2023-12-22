@@ -25,6 +25,15 @@ class StudentControllerTest {
 
     private MockMvc mockMvc;
     @Test
+    public void getAll() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/students");
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200));
+
+    }
+    @Test
     public void getById() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/students/{studentId}",3)
@@ -53,4 +62,6 @@ class StudentControllerTest {
                 .andExpect(status().is(201));
 
     }
+
+
 }

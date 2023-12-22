@@ -44,9 +44,9 @@ public class StudentController {
         return "執行delete sql";
     }
     @GetMapping("students")
-    public List<Student> select(){
+    public ResponseEntity<List<Student>> select(){
         List<Student> studentList = studentService.getAllStudents();
-        return studentList;
+        return ResponseEntity.status(HttpStatus.OK).body(studentList);
     }
     @GetMapping("students/{studentId}")
     public ResponseEntity<Student> selectStudent(@PathVariable Integer studentId){
