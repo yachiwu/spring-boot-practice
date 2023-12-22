@@ -40,5 +40,32 @@ public class StudentServiceImplMockTest {
         assertEquals(100,student.getId());
         assertEquals("I am mock",student.getName());
     }
+    @Test
+    public void insertStudent (){
+        Student student = new Student();
+        student.setName("inserttest");
+
+        // 模擬 呼叫StudentDao 的 insertStudent 方法
+        Mockito.when(studentDao.insertStudent(Mockito.any())).thenReturn(100);
+
+        Integer id = studentService.insertStudent(student);
+
+        assertNotNull(id);
+        assertEquals(100, id);
+    }
+    @Test
+    public void updateStudentTest() {
+
+        Student studentToUpdate = new Student();
+        studentToUpdate.setId(1);
+        studentToUpdate.setName("Updated Name");
+
+        // 模擬 呼叫StudentDao 的 updateStudent 方法
+        Mockito.doNothing().when(studentDao).updateStudent(Mockito.any(Student.class));
+        studentService.updateStudent(studentToUpdate);
+
+        // 驗證是否調用了studentDao.updateStudent()方法，且傳遞的參数是預期的studentToUpdate
+        Mockito.verify(studentDao, Mockito.times(1)).updateStudent(studentToUpdate);
+    }
 
 }
